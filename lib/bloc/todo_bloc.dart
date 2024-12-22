@@ -28,22 +28,23 @@ import 'package:bloc_todo/bloc/todo_event.dart';
 import 'package:bloc_todo/bloc/todo_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ToDo {
-  static List<String> data = [];
-}
+// class ToDo {
+//   static List<String> data = [];
+// }
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
-  TodoBloc() : super(TodoUpdate(todos: ToDo.data)) {
+  static List<String> data = [];
+  TodoBloc() : super(TodoUpdate(todos: data)) {
     on<addTodo>((event, emit) {
-      final todoList = ToDo.data;
+      final todoList = data;
       todoList.add(event.title);
-      emit(TodoUpdate(todos: List.from(ToDo.data)));
+      emit(TodoUpdate(todos: List.from(data)));
     });
 
     on<deleteTodo>((event, emit) {
-      final todoList = ToDo.data;
+      final todoList = data;
       todoList.removeAt(event.index);
-      emit(TodoUpdate(todos: List.from(ToDo.data)));
+      emit(TodoUpdate(todos: List.from(data)));
     });
   }
 }
