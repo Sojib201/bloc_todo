@@ -18,18 +18,34 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('ToDo'),
+      ),
       body: BlocBuilder<TodoBloc, TodoState>(
         builder: (context, state) {
           if (state is TodoInit) {
-            return _view(context, '');
+            return _view(context, []);
           }
           if (state is TodoUpdate) {
-            return _view(context, state.todos[]);
+            return _view(context, state.todos);
           }
           return Container();
         },
       ),
     );
+
+    //   body: BlocBuilder<TodoBloc, TodoState>(
+    //     builder: (context, state) {
+    //       if (state is TodoInit) {
+    //         return _view(context, []);
+    //       } else if (state is TodoUpdate) {
+    //         return _view(context, state.todos);
+    //       }
+    //       return Container();
+    //     },
+    //   ),
+    // );
+    //
     // return Scaffold(
     //     body: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
     //   if (state is TodoUpdate) {
@@ -54,55 +70,53 @@ class _HomePageState extends State<HomePage> {
     // }));
   }
 
-  Widget _view(BuildContext context,String todos){
-    return Column(
-      children: [
-        TextField(
-          controller: _controller,
-        ),
-        SizedBox(
-          width: 200,
-          child: ElevatedButton(
-            onPressed: () {
-              context.read<TodoBloc>().add(addTodo(_controller.text));
-              _controller.text='';
-            },
-            child: Text('Add ToDo'),
+  Widget _view(BuildContext context, List<String> todos) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Column(
+        children: [
+          TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter a todo',
+            ),
           ),
-        ),
-        Expanded(
-          child: BlocBuilder<TodoBloc, TodoState>(
-            builder: (context, state) {
-              return ListView.builder(
-                itemCount: todos.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(child: Text(todos[index]),),
-                            IconButton(
-                              onPressed: () {
-                                context.read<TodoBloc>().add(deleteTodo(index));
-                              },
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+          SizedBox(
+            width: 200,
+            child: ElevatedButton(
+              onPressed: () {
+                if (_controller.text.trim().isNotEmpty) {
+                  context.read<TodoBloc>().add(addTodo(_controller.text.trim()));
+                  _controller.clear();
+                }
+              },
+              child: const Text('Add ToDo'),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: todos.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  elevation: 5,
+                  child: ListTile(
+                    title: Text(todos[index]),
+                    trailing: IconButton(
+                      onPressed: () {
+                        context.read<TodoBloc>().add(deleteTodo(index));
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
                     ),
-                  );
-                },
-              );
-            },
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
