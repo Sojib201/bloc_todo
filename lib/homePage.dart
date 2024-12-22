@@ -78,26 +78,42 @@ class _HomePageState extends State<HomePage> {
           TextField(
             controller: _controller,
             decoration: const InputDecoration(
+              filled: true,
+              fillColor: Colors.white10,
+              focusedBorder: OutlineInputBorder(),
+              enabledBorder: OutlineInputBorder(),
               hintText: 'Enter a todo',
             ),
           ),
+          SizedBox(height: 20,),
           SizedBox(
             width: 200,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {
                 if (_controller.text.trim().isNotEmpty) {
-                  context.read<TodoBloc>().add(addTodo(_controller.text.trim()));
+                  context
+                      .read<TodoBloc>()
+                      .add(addTodo(_controller.text.trim()));
                   _controller.clear();
                 }
               },
-              child: const Text('Add ToDo'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+              child: const Text(
+                'Add ToDo',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
+          ),
+          SizedBox(
+            height: 20,
           ),
           Expanded(
             child: ListView.builder(
               itemCount: todos.length,
               itemBuilder: (context, index) {
                 return Card(
+                  color: Colors.grey,
                   elevation: 5,
                   child: ListTile(
                     title: Text(todos[index]),
