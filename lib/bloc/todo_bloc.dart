@@ -36,12 +36,15 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   static List<String> data = [];
   TodoBloc() : super(TodoUpdate(todos: data)) {
     on<addTodo>((event, emit) {
+      emit(TodoInit());
       final todoList = data;
       todoList.add(event.title);
       emit(TodoUpdate(todos: List.from(data)));
+
     });
 
     on<deleteTodo>((event, emit) {
+      emit(TodoInit());
       final todoList = data;
       todoList.removeAt(event.index);
       emit(TodoUpdate(todos: List.from(data)));
